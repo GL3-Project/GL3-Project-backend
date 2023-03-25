@@ -12,10 +12,10 @@ variables:
   azureSubscription: 'f842bcf2-449e-45ea-89a5-7cfd7f5c6aa4'
 
   # Web app name
-  webAppName: ''
+  webAppName: 'ppp-nest'
 
   # Environment name
-  environmentName: ''
+  environmentName: 'ppp-nest'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
