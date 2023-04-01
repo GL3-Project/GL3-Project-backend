@@ -1,21 +1,21 @@
-FROM node:18
+FROM node:16
 
 # Create app directory
 WORKDIR /usr/src/app
 
-RUN npm install -g typescript
-RUN npm install -g ts-node
+RUN yarn add -g typescript
+RUN yarn add -g ts-node
 # Files required by pnpm install
 COPY package*.json /usr/src/app/
 COPY tsconfig.json /usr/src/app/
 
 # Install app dependencies
-RUN npm install
+RUN yarn
 
 # Bundle app source
 COPY ./src .
 
-RUN npm run build
+RUN yarn run build
 
 EXPOSE 8080
 
