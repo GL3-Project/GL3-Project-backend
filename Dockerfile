@@ -15,6 +15,8 @@ RUN npm install
 # Bundle app source
 COPY ./src .
 
+RUN npm run build
+
 EXPOSE 8080
 
-CMD [ "ts-node", "./main.ts" ]
+CMD [ "node","dist/main.js" ]
