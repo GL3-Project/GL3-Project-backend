@@ -16,7 +16,7 @@ describe('AppController', () => {
 
   describe('root', () => {
     it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World from main!');
+      expect(appController.getHello()).toBe('Hello World from main with! This is a dockerized build.');
     });
   });
 });
