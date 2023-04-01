@@ -3,8 +3,7 @@ FROM node:16
 # Create app directory
 WORKDIR /usr/src/app
 
-RUN yarn add -g typescript
-RUN yarn add -g ts-node
+RUN yarn add global typescript
 # Files required by pnpm install
 COPY package*.json /usr/src/app/
 COPY tsconfig.json /usr/src/app/
