@@ -30,7 +30,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: gl3project.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_1cdc889560b54125a0925ce6261b261c }}/nestppp:${{ github.sha }}
+        tags: gl3project.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_1cdc889560b54125a0925ce6261b261c }}/gl3project:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
