@@ -32,7 +32,6 @@ jobs:
           push: true
           tags: gl3project.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_1cdc889560b54125a0925ce6261b261c }}/gl3project:${{ github.sha }}
           file: ./Dockerfile
-
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -45,13 +44,10 @@ jobs:
         uses: FrodeHus/azwebapp-container-action@v1
         with:
           webapp_name: nestproject
-          resource_group : gl3-project
+          resource_group: gl3-project
           image: gl3project.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_1cdc889560b54125a0925ce6261b261c }}/gl3project:${{ github.sha }}
           tag: ${{ github.sha }}
           registry: gl3project
-          tenant : dbd6664d-4eb9-46eb-99d8-5c43ba153c61
+          tenant: dbd6664d-4eb9-46eb-99d8-5c43ba153c61
           service_principal: 095bfc0d-3dac-4521-a6c6-4c7179850255
           service_principal_password: 3zO8Q~Mo6NXUXdBRXIKR8GJTCvYonDJAtKC-EbDS
-
-
-
