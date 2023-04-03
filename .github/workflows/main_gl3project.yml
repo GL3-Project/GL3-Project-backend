@@ -22,7 +22,7 @@ jobs:
     - name: Log in to registry
       uses: docker/login-action@v1
       with:
-        registry: https://nestppp.azurecr.io/
+        registry: https://gl3project.azurecr.io/
         username: ${{ secrets.AzureAppService_ContainerUsername_1cdc889560b54125a0925ce6261b261c }}
         password: ${{ secrets.AzureAppService_ContainerPassword_1f7dffb584614e3091b0a2808f92c695 }}
 
@@ -30,7 +30,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: nestppp.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_1cdc889560b54125a0925ce6261b261c }}/nestppp:${{ github.sha }}
+        tags: gl3project.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_1cdc889560b54125a0925ce6261b261c }}/nestppp:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -48,4 +48,4 @@ jobs:
         app-name: 'gl3project'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_f14f799395b94488b102410b4843c56f }}
-        images: 'nestppp.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_1cdc889560b54125a0925ce6261b261c }}/nestppp:${{ github.sha }}'
+        images: 'gl3project.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_1cdc889560b54125a0925ce6261b261c }}/gl3project:${{ github.sha }}'
