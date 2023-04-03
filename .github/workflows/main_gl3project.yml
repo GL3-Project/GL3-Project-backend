@@ -46,6 +46,5 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: 'gl3project'
-        slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_f14f799395b94488b102410b4843c56f }}
         images: 'gl3project.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_1cdc889560b54125a0925ce6261b261c }}/gl3project:${{ github.sha }}'
