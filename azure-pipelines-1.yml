@@ -38,6 +38,6 @@ stages:
         tags: $(tag)
     - task: AzureWebAppContainer@1
       inputs:
-        azureSubscription: 'newSC'
+        azureSubscription: 'Azure for Students(3)(154809b9-1123-4253-b218-8f1174e7e34b)'
         appName: 'GL3Project'
         containers: 'gl3project.azurecr.io/gl3projectbackend:$(tag)'
