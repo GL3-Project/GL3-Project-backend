@@ -28,12 +28,9 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
-    - task: Docker@2
-      displayName: Build and push an image to container registry
+    - task: SSH@0
       inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
-        tags: |
-          $(tag)
+        sshEndpoint: 'pppVM'
+        runOptions: 'commands'
+        commands: 'echo "Hello"'
+        readyTimeout: '20000'
