@@ -49,3 +49,7 @@ stages:
       inputs:
         targetType: 'inline'
         script: 'sudo docker run -d -p 80:80 gl3project.azurecr.io/gl3projectbackend:latest'
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: 'sudo docker image ls'
