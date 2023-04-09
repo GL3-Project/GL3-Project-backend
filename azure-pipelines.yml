@@ -47,7 +47,7 @@ stages:
       inputs:
         sshEndpoint: 'pppVM'
         runOptions: 'commands'
-        commands: 'unzip -o $(targetFolderPath)/main.zip'
+        commands: 'unzip -o $(targetFolderPath)/main.zip -d $(targetFolderPath)'
         readyTimeout: '20000'
 
     - task: SSH@0
