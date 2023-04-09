@@ -9,20 +9,13 @@ resources:
 - repo: self
 
 variables:
-  # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '810025ea-f974-4822-864d-0058c450656c'
-  imageRepository: 'nestppp'
-  containerRegistry: 'nestppp.azurecr.io'
-  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
-  tag: '$(Build.BuildId)'
+  targetFolderPath : /home/ppp/GL3Project/Back/main
+  containerImage : gl3project-back-main
   System.Debug : true
-
-  # Agent VM image name
-  # vmImageName: 'ubuntu-latest'
 
 stages:
 - stage: Build
-  displayName: Build and push stage
+  displayName: Build stage
   jobs:
   - job: Build
     displayName: Build
@@ -32,5 +25,67 @@ stages:
       inputs:
         sshEndpoint: 'pppVM'
         runOptions: 'commands'
-        commands: 'echo "Hello"'
+        commands: 'cd $(System.DefaultWorkingDirectory) && zip -r main.zip'
+        readyTimeout: '20000'
+    - task: SSH@0
+      inputs:
+        sshEndpoint: 'pppVM'
+        runOptions: 'commands'
+        commands: 'mkdir -p $(targetFolderPath)'
+        readyTimeout: '20000'
+    - task: CopyFilesOverSSH@0
+      inputs:
+        sshEndpoint: 'pppVM'
+        sourceFolder: '$(System.DefaultWorkingDirectory)'
+        contents: 'main.zip'
+        targetFolder: '$(targetFolderPath)'
+        cleanTargetFolder: true
+        cleanHiddenFilesInTarget: true
+        readyTimeout: '20000'
+      
+    - task: SSH@0
+      inputs:
+        sshEndpoint: 'pppVM'
+        runOptions: 'commands'
+        commands: 'unzip -o $(targetFolderPath)/main.zip'
+        readyTimeout: '20000'
+
+    - task: SSH@0
+      inputs:
+        sshEndpoint: 'pppVM'
+        runOptions: 'commands'
+        commands: 'rm -rf $(targetFolderPath)/main.zip'
+        readyTimeout: '20000'
+    - task: SSH@0
+      inputs:
+        sshEndpoint: 'pppVM'
+        runOptions: 'commands'
+        commands: 'docker build -t $(containerImage):latest $(targetFolderPath)'
+        readyTimeout: '20000'
+    - task: SSH@0
+      inputs:
+        sshEndpoint: 'pppVM'
+        runOptions: 'commands'
+        commands: 'rm -rf $(targetFolderPath)'
+        readyTimeout: '20000'
+
+- stage: Deploy
+  displayName: Deploy stage
+  jobs:
+  - job: Deploy
+    displayName: Deploy
+    pool: newAgent
+    steps:
+    - task: SSH@0
+      inputs:
+        sshEndpoint: 'pppVM'
+        runOptions: 'commands'
+        commands: 'docker stop $(containerImage) && docker rm $(containerImage)'
+        readyTimeout: '20000'
+      
+    - task: SSH@0
+      inputs:
+        sshEndpoint: 'pppVM'
+        runOptions: 'commands'
+        commands: 'docker run --name $(containerImage) --restart unless-stopped -d -p 80:80 $(containerImage):latest'
         readyTimeout: '20000'
