@@ -25,7 +25,7 @@ stages:
       inputs:
         sshEndpoint: 'pppVM'
         runOptions: 'commands'
-        commands: 'cd $(System.DefaultWorkingDirectory) && zip -r main.zip'
+        commands: 'cd $(System.DefaultWorkingDirectory) && ls'
         readyTimeout: '20000'
     - task: SSH@0
       inputs:
