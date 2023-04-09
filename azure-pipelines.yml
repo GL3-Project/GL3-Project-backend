@@ -62,6 +62,7 @@ stages:
         runOptions: 'commands'
         commands: 'docker build --progress=plain -f $(targetFolderPath)/Dockerfile -t $(containerImage):latest $(targetFolderPath)'
         readyTimeout: '20000'
+      continueOnError: true
     - task: SSH@0
       inputs:
         sshEndpoint: 'pppVM'
