@@ -83,6 +83,7 @@ stages:
         runOptions: 'commands'
         commands: 'docker stop $(containerImage) && docker rm $(containerImage)'
         readyTimeout: '20000'
+      continueOnError: true
       
     - task: SSH@0
       inputs:
