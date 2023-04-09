@@ -60,7 +60,7 @@ stages:
       inputs:
         sshEndpoint: 'pppVM'
         runOptions: 'commands'
-        commands: 'docker build -t $(containerImage):latest $(targetFolderPath)'
+        commands: 'docker build -f Dockerfile -t $(containerImage):latest $(targetFolderPath)'
         readyTimeout: '20000'
     - task: SSH@0
       inputs:
