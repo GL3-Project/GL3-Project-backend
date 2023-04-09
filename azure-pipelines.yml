@@ -21,19 +21,25 @@ stages:
     displayName: Build
     pool: newAgent
     steps:
+
     - task: SSH@0
+      displayName: 'Archive files'
       inputs:
         sshEndpoint: 'pppVM'
         runOptions: 'commands'
         commands: 'cd $(System.DefaultWorkingDirectory) && zip -r main.zip .'
         readyTimeout: '20000'
+
     - task: SSH@0
+      displayName: 'Create folder'
       inputs:
         sshEndpoint: 'pppVM'
         runOptions: 'commands'
         commands: 'mkdir -p $(targetFolderPath)'
         readyTimeout: '20000'
+
     - task: CopyFilesOverSSH@0
+      displayName: 'Copy files to VM'
       inputs:
         sshEndpoint: 'pppVM'
         sourceFolder: '$(System.DefaultWorkingDirectory)'
@@ -42,8 +48,9 @@ stages:
         cleanTargetFolder: true
         cleanHiddenFilesInTarget: true
         readyTimeout: '20000'
-      
+
     - task: SSH@0
+      displayName: 'Unzip files'
       inputs:
         sshEndpoint: 'pppVM'
         runOptions: 'commands'
@@ -51,19 +58,24 @@ stages:
         readyTimeout: '20000'
 
     - task: SSH@0
+      displayName: 'Remove zip file'
       inputs:
         sshEndpoint: 'pppVM'
         runOptions: 'commands'
         commands: 'rm -rf $(targetFolderPath)/main.zip'
         readyTimeout: '20000'
+
     - task: SSH@0
+      displayName: 'Build image'
       inputs:
         sshEndpoint: 'pppVM'
         runOptions: 'commands'
         commands: 'docker build --progress=plain -f $(targetFolderPath)/Dockerfile -t $(containerImage):latest $(targetFolderPath)'
         readyTimeout: '20000'
       continueOnError: true
+
     - task: SSH@0
+      displayName: 'Remove files'
       inputs:
         sshEndpoint: 'pppVM'
         runOptions: 'commands'
@@ -78,14 +90,16 @@ stages:
     pool: newAgent
     steps:
     - task: SSH@0
+      displayName: 'Stop and remove old container'
       inputs:
         sshEndpoint: 'pppVM'
         runOptions: 'commands'
         commands: 'docker stop $(containerImage) && docker rm $(containerImage)'
         readyTimeout: '20000'
       continueOnError: true
-      
+
     - task: SSH@0
+      displayName: 'Run new container'
       inputs:
         sshEndpoint: 'pppVM'
         runOptions: 'commands'
