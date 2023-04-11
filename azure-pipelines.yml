@@ -89,7 +89,7 @@ stages:
   jobs:
   - job: Deploy
     displayName: Deploy
-    pool: newAgent
+    pool: $(Agent)
     steps:
     - task: SSH@0
       displayName: 'Stop and remove old container'
