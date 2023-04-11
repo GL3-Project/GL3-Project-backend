@@ -9,7 +9,7 @@ resources:
 - repo: self
 
 variables:
-  targetFolderPath : /home/ppp/GL3Project/Back/main
+  targetFolderPath : /home/nest/GL3Project/Back/main
   containerImage : gl3project-back-main
   System.Debug : true
   Agent : OnPermAgent
