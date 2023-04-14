@@ -76,13 +76,6 @@ stages:
         readyTimeout: '20000'
       continueOnError: true
 
-    - task: SSH@0
-      displayName: 'Remove files'
-      inputs:
-        sshEndpoint: $(sshEndpoint)
-        runOptions: 'commands'
-        commands: 'rm -rf $(targetFolderPath)'
-        readyTimeout: '20000'
 
 - stage: Deploy
   displayName: Deploy stage
@@ -106,4 +99,12 @@ stages:
         sshEndpoint: $(sshEndpoint)
         runOptions: 'commands'
         commands: 'docker compose up'
+        readyTimeout: '20000'
+
+    - task: SSH@0
+      displayName: 'Remove files'
+      inputs:
+        sshEndpoint: $(sshEndpoint)
+        runOptions: 'commands'
+        commands: 'rm -rf $(targetFolderPath)'
         readyTimeout: '20000'
