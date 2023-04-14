@@ -89,7 +89,7 @@ stages:
       inputs:
         sshEndpoint: $(sshEndpoint)
         runOptions: 'commands'
-        commands: 'docker compose down'
+        commands: 'docker compose -f $(targetFolderPath)/docker-compose.yml down'
         readyTimeout: '20000'
       continueOnError: true
 
