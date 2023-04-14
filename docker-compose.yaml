@@ -1,0 +1,6 @@
+services:
+  backend:
+    image: gl3project-back-main:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
