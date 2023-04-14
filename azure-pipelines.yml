@@ -98,7 +98,7 @@ stages:
       inputs:
         sshEndpoint: $(sshEndpoint)
         runOptions: 'commands'
-        commands: 'docker compose -d -f $(targetFolderPath)/docker-compose.yml up'
+        commands: 'docker compose -f $(targetFolderPath)/docker-compose.yml up -d'
         readyTimeout: '20000'
 
     - task: SSH@0
