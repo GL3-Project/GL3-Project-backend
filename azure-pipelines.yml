@@ -9,9 +9,11 @@ resources:
 - repo: self
 
 variables:
-  targetFolderPath : /home/ppp/GL3Project/Back/main
+  targetFolderPath : /home/nest/GL3Project/Back/main
   containerImage : gl3project-back-main
   System.Debug : true
+  Agent : OnPermAgent
+  sshEndpoint : nestVM
 
 stages:
 - stage: Build
@@ -19,13 +21,13 @@ stages:
   jobs:
   - job: Build
     displayName: Build
-    pool: newAgent
+    pool: $(Agent)
     steps:
 
     - task: SSH@0
       displayName: 'Archive files'
       inputs:
-        sshEndpoint: 'pppVM'
+        sshEndpoint: $(sshEndpoint)
         runOptions: 'commands'
         commands: 'cd $(System.DefaultWorkingDirectory) && zip -r main.zip .'
         readyTimeout: '20000'
@@ -33,7 +35,7 @@ stages:
     - task: SSH@0
       displayName: 'Create folder'
       inputs:
-        sshEndpoint: 'pppVM'
+        sshEndpoint: $(sshEndpoint)
         runOptions: 'commands'
         commands: 'mkdir -p $(targetFolderPath)'
         readyTimeout: '20000'
@@ -41,7 +43,7 @@ stages:
     - task: CopyFilesOverSSH@0
       displayName: 'Copy files to VM'
       inputs:
-        sshEndpoint: 'pppVM'
+        sshEndpoint: $(sshEndpoint)
         sourceFolder: '$(System.DefaultWorkingDirectory)'
         contents: 'main.zip'
         targetFolder: '$(targetFolderPath)'
@@ -52,7 +54,7 @@ stages:
     - task: SSH@0
       displayName: 'Unzip files'
       inputs:
-        sshEndpoint: 'pppVM'
+        sshEndpoint: $(sshEndpoint)
         runOptions: 'commands'
         commands: 'unzip -o $(targetFolderPath)/main.zip -d $(targetFolderPath)'
         readyTimeout: '20000'
@@ -60,7 +62,7 @@ stages:
     - task: SSH@0
       displayName: 'Remove zip file'
       inputs:
-        sshEndpoint: 'pppVM'
+        sshEndpoint: $(sshEndpoint)
         runOptions: 'commands'
         commands: 'rm -rf $(targetFolderPath)/main.zip'
         readyTimeout: '20000'
@@ -68,41 +70,40 @@ stages:
     - task: SSH@0
       displayName: 'Build image'
       inputs:
-        sshEndpoint: 'pppVM'
+        sshEndpoint: $(sshEndpoint)
         runOptions: 'commands'
-        commands: 'docker build --progress=plain -f $(targetFolderPath)/Dockerfile -t $(containerImage):latest $(targetFolderPath)'
+        commands: 'docker build --progress=plain -t $(containerImage):latest $(targetFolderPath)'
         readyTimeout: '20000'
       continueOnError: true
 
+    - task: SSH@0
+      displayName: 'Remove files'
+      inputs:
+        sshEndpoint: $(sshEndpoint)
+        runOptions: 'commands'
+        commands: 'rm -rf $(targetFolderPath)'
+        readyTimeout: '20000'
 
 - stage: Deploy
   displayName: Deploy stage
   jobs:
   - job: Deploy
     displayName: Deploy
-    pool: newAgent
+    pool: $(Agent)
     steps:
-#    - task: SSH@0
-#      displayName: 'Stop and remove old container'
-#      inputs:
-#        sshEndpoint: 'pppVM'
-#        runOptions: 'commands'
-#        commands: 'docker stop $(containerImage) && docker rm $(containerImage)'
-#        readyTimeout: '20000'
-#      continueOnError: true
+    - task: SSH@0
+      displayName: 'Stop and remove old containers'
+      inputs:
+        sshEndpoint: $(sshEndpoint)
+        runOptions: 'commands'
+        commands: 'docker compose down'
+        readyTimeout: '20000'
+      continueOnError: true
 
     - task: SSH@0
       displayName: 'Run new container'
       inputs:
-        sshEndpoint: 'pppVM'
+        sshEndpoint: $(sshEndpoint)
         runOptions: 'commands'
-        commands: 'docker run --name $(containerImage) --restart unless-stopped -d -p 80:80 $(containerImage):latest'
-        readyTimeout: '20000'
-
-    - task: SSH@0
-      displayName: 'Remove files'
-      inputs:
-        sshEndpoint: 'pppVM'
-        runOptions: 'commands'
-        commands: 'rm -rf $(targetFolderPath)'
+        commands: 'docker compose up'
         readyTimeout: '20000'
