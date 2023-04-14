@@ -72,7 +72,7 @@ stages:
       inputs:
         sshEndpoint: $(sshEndpoint)
         runOptions: 'commands'
-        commands: 'docker build --progress=plain -f $(targetFolderPath)/Dockerfile -t $(containerImage):latest $(targetFolderPath)'
+        commands: 'docker build --progress=plain -t $(containerImage):latest $(targetFolderPath)'
         readyTimeout: '20000'
       continueOnError: true
 
@@ -92,11 +92,11 @@ stages:
     pool: $(Agent)
     steps:
     - task: SSH@0
-      displayName: 'Stop and remove old container'
+      displayName: 'Stop and remove old containers'
       inputs:
         sshEndpoint: $(sshEndpoint)
         runOptions: 'commands'
-        commands: 'docker stop $(containerImage) && docker rm $(containerImage)'
+        commands: 'docker compose down'
         readyTimeout: '20000'
       continueOnError: true
 
@@ -105,5 +105,5 @@ stages:
       inputs:
         sshEndpoint: $(sshEndpoint)
         runOptions: 'commands'
-        commands: 'docker run --name $(containerImage) --restart unless-stopped -d -p 80:80 $(containerImage):latest'
+        commands: 'docker compose up'
         readyTimeout: '20000'
