@@ -12,7 +12,7 @@ variables:
   targetFolderPath : /home/nest/GL3Project/Back/main
   containerImage : gl3project-back-main
   System.Debug : true
-  Agent : "Azure agent"
+  Agent : "Azure Pipelines"
   sshEndpoint : nestVM
 
 stages:
