@@ -24,13 +24,12 @@ stages:
     pool: $(Agent)
     steps:
 
-    - task: SSH@0
+    
+    - task: CmdLine@2
       displayName: 'Archive files'
       inputs:
-        sshEndpoint: $(sshEndpoint)
-        runOptions: 'commands'
-        commands: 'cd $(System.DefaultWorkingDirectory)/InspectionWeb/ClientApp/src && zip -r main.zip .'
-        readyTimeout: '20000'
+        script: 'zip -r main.zip .'
+      
 
     - task: SSH@0
       displayName: 'Create folder'
