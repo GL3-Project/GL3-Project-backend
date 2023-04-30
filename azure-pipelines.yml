@@ -24,12 +24,12 @@ stages:
     pool: $(Agent)
     steps:
 
-    
+
     - task: CmdLine@2
       displayName: 'Archive files'
       inputs:
         script: 'zip -r main.zip .'
-      
+
 
     - task: SSH@0
       displayName: 'Create folder'
@@ -99,6 +99,7 @@ stages:
         runOptions: 'commands'
         commands: 'docker compose -f $(targetFolderPath)/docker-compose.yml up -d'
         readyTimeout: '20000'
+      continueOnError: true
 
     - task: SSH@0
       displayName: 'Remove files'
