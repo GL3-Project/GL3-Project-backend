@@ -71,7 +71,7 @@ stages:
       inputs:
         sshEndpoint: $(sshEndpoint)
         runOptions: 'commands'
-        commands: 'docker build -t $(containerImage):latest $(targetFolderPath)'
+        commands: 'docker build -t $(containerImage):latest $(targetFolderPath) 2>&1'
         readyTimeout: '20000'
       continueOnError: true
 
