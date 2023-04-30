@@ -4,17 +4,17 @@ FROM node:18-alpine3.16
 WORKDIR /usr/src/app
 
 # Files required by pnpm install
-COPY package*.json /usr/src/app/
-COPY tsconfig.json /usr/src/app/
+#COPY package*.json /usr/src/app/
+#COPY tsconfig.json /usr/src/app/
 
 # Install app dependencies
 RUN npm install
 
 # Bundle app source
-COPY . /usr/src/app
+#COPY . /usr/src/app
 
 # Build app
-RUN npm run build
+#RUN npm run build
 
 # Expose port
 EXPOSE 80
