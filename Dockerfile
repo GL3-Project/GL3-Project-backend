@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 #COPY tsconfig.json /usr/src/app/
 
 # Install app dependencies
-RUN npm install
+#RUN npm install
 
 # Bundle app source
 #COPY . /usr/src/app
@@ -21,4 +21,6 @@ EXPOSE 80
 
 # Run app
 
-CMD [ "node","dist/main.js" ]
+#CMD [ "node","dist/main.js" ]
+
+CMD ECHO "Hello World"
