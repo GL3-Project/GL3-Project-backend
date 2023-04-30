@@ -15,7 +15,7 @@ WORKDIR /usr/src/app
 
 # Build app
 #RUN npm run build
-
+CMD ECHO "Hello World"
 # Expose port
 EXPOSE 80
 
