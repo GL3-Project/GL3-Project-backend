@@ -90,7 +90,7 @@ stages:
         runOptions: 'commands'
         commands: 'docker compose -f $(targetFolderPath)/docker-compose.yml down 2>&1'
         readyTimeout: '20000'
-
+      continueOnError: true
     - task: SSH@0
       displayName: 'Run new container'
       inputs:
@@ -98,7 +98,6 @@ stages:
         runOptions: 'commands'
         commands: 'docker compose -f $(targetFolderPath)/docker-compose.yml up -d 2>&1'
         readyTimeout: '20000'
-      continueOnError: true
 
     - task: SSH@0
       displayName: 'Remove files'
