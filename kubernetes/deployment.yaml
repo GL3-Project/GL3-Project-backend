@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nest-is-best
+  labels:
+    app: nest-is-best
+spec:
+  selector:
+    matchLabels:
+      app: nest-is-best
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: nest-is-best
+    spec:
+      containers:
+        - name: nest-is-best
+          image: gl3project-back-main:latest
+          imagePullPolicy: Never
+          ports:
+              - containerPort: 80
+          livenessProbe:
+            httpGet:
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 5
+
+
