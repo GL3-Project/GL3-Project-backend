@@ -35,9 +35,9 @@ async function bootstrap() {
 	app.enableCors({ origin: allowedOrigins });
 
 	// get port to listen on from environment variables
-	const { port } = configService.getMiscConfig();
+	// const { port } = configService.getMiscConfig();
 
-	await app.listen(port);
+	await app.listen(80);
 }
 
 bootstrap();
