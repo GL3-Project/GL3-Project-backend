@@ -21,7 +21,7 @@ export const miscConfig = registerAs(
 		port: parseInt(
 			process.env.PORT && process.env.PORT !== ''
 				? process.env.PORT
-				: '3000',
+				: '80',
 		),
 		front: process.env.FRONT_URI,
 	}),
