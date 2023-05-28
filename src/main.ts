@@ -4,7 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { json, urlencoded } from 'express';
 import { BaseInterceptor } from '@base/interceptors/base.interceptor';
 import { ConfigurationService } from '@configuration/configuration.service';
-
+require('raygun-apm/http');
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 	const configService = app.get(ConfigurationService);
