@@ -25,7 +25,7 @@ async function bootstrap() {
 	app.useGlobalInterceptors(new BaseInterceptor());
 
 	// enable logging
-	app.useLogger(['log', 'error', 'warn ']);
+	app.useLogger(['log', 'error', 'warn']);
 
 	// configure CORS policy to accept requests only from frontend server
 	const { front } = configService.getMiscConfig();
