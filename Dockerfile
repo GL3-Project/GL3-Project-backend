@@ -21,4 +21,4 @@ EXPOSE 80
 
 # Run app
 
-CMD [ "ls -R ./dist" ]
+CMD [ "ls", "-R" ,"./dist" ]
