@@ -13,8 +13,8 @@ RUN npm install
 # Bundle app source
 COPY . /usr/src/app
 
-# Build app
-RUN npm run build
+## Build app
+#RUN npm run build
 
 # Expose port
 EXPOSE 80
