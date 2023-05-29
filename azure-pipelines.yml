@@ -99,10 +99,10 @@ stages:
         commands: 'docker compose -f $(targetFolderPath)/docker-compose.yml up -d 2>&1'
         readyTimeout: '20000'
 
-    - task: SSH@0
-      displayName: 'Remove files'
-      inputs:
-        sshEndpoint: $(sshEndpoint)
-        runOptions: 'commands'
-        commands: 'rm -rf $(targetFolderPath)'
-        readyTimeout: '20000'
+#    - task: SSH@0
+#      displayName: 'Remove files'
+#      inputs:
+#        sshEndpoint: $(sshEndpoint)
+#        runOptions: 'commands'
+#        commands: 'rm -rf $(targetFolderPath)'
+#        readyTimeout: '20000'
