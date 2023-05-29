@@ -21,4 +21,4 @@ EXPOSE 80
 
 # Run app
 
-CMD [ "node","./dist/main.js" ]
+CMD [ "npm","start" ]
