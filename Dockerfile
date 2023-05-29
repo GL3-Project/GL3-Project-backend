@@ -16,6 +16,8 @@ COPY . /usr/src/app
 ## Build app
 #RUN npm run build
 
+RUN apk add gcompat
+
 # Expose port
 EXPOSE 80
 
