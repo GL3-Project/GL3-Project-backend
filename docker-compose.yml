@@ -4,4 +4,4 @@ services:
     restart: unless-stopped
     platform: linux/x86_64
     ports:
-      - "80:80"
+      - "80:3000"

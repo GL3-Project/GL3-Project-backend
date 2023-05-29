@@ -13,14 +13,14 @@ RUN npm install
 # Bundle app source
 COPY . /usr/src/app
 
-## Build app
-#RUN npm run build
+# Build app
+RUN npm run build
 
+#This is required for the app to run on alpine
 RUN apk add gcompat
 
 # Expose port
-EXPOSE 80
-
+EXPOSE 3000
 # Run app
 
-CMD [ "npm","start" ]
+CMD [ "npm","start:prod" ]
