@@ -23,4 +23,4 @@ RUN apk add gcompat
 EXPOSE 3000
 # Run app
 
-CMD [ "npm","start:prod" ]
+CMD [ "npm","run","start:prod" ]
