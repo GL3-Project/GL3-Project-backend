@@ -17,7 +17,7 @@ COPY . /usr/src/app
 RUN npm run build
 
 # Expose port
-EXPOSE z
+EXPOSE 80
 
 # Run app
 
