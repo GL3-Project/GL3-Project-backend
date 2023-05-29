@@ -21,4 +21,4 @@ EXPOSE 80
 
 # Run app
 
-CMD [ "node","src/dist/main.js" ]
+CMD [ "ls","-R", "./dist" ]
