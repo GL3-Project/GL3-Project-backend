@@ -15,7 +15,6 @@
         "src/*"
       ]
     },
-    "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
     "noImplicitAny": false,
