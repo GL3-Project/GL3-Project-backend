@@ -5,7 +5,7 @@ WORKDIR /usr/src/app
 
 # Files required by pnpm install
 COPY package*.json /usr/src/app/
-COPY tsconfig.json /usr/src/app/
+COPY tsconfig*.json /usr/src/app/
 
 # Install app dependencies
 RUN npm install
