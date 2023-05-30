@@ -23,7 +23,7 @@ export class StudentController {
 
 	@Get()
 	async findAll() {
-		return "This is the student controller."
+		return 'This is the student controller.';
 	}
 
 	@Get(':id')
