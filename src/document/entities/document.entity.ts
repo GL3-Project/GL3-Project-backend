@@ -4,7 +4,7 @@ import { IDocument } from '@document/interfaces/document.interface';
 
 @Entity({ name: 'document' })
 export class Document extends BaseEntity implements IDocument {
-	@Column({ type: 'string' })
+	@Column({ type: 'varchar', length: 255, nullable: false })
 	name: string;
 
 	// TODO: complete entity. Take your time with decorator options.
