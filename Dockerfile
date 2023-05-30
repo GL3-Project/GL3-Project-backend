@@ -8,7 +8,7 @@ COPY package*.json /usr/src/app/
 COPY tsconfig*.json /usr/src/app/
 
 # Install app dependencies
-RUN npm install
+RUN npm install --omit=dev
 
 # Bundle app source
 COPY . /usr/src/app
