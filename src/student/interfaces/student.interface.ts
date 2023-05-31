@@ -1,4 +1,6 @@
-export interface IPersonnelProfile {
+import { ISocials } from '@user/intefaces/socials.interface';
+
+export interface IStudentProfile {
 	firstName: string;
 	lastName: string;
 	cin: string;
@@ -6,4 +8,5 @@ export interface IPersonnelProfile {
 	address?: string;
 	email: string;
 	phone: string;
+	socials: ISocials;
 }

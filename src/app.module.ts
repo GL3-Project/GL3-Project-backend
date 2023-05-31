@@ -8,6 +8,8 @@ import { StudentModule } from '@student/student.module';
 import { PersonnelModule } from '@personnel/personnel.module';
 import { DocumentModule } from '@document/document.module';
 import { TemplateModule } from '@template/template.module';
+import { AccountModule } from '@account/account.module';
+import { AuthenticationModule } from '@authentication/authentication.module';
 
 @Module({
 	imports: [
@@ -47,6 +49,8 @@ import { TemplateModule } from '@template/template.module';
 		PersonnelModule,
 		DocumentModule,
 		TemplateModule,
+		AccountModule,
+		AuthenticationModule,
 	],
 	controllers: [],
 	providers: [],
