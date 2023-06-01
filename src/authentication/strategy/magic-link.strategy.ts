@@ -16,7 +16,7 @@ export class JwtStrategy extends PassportStrategy(
 		private readonly configService: ConfigurationService,
 		private readonly userService: UserService,
 	) {
-		const { secret } = configService.getAuthConfig().jwt;
+		const { secret } = configService.getAuthConfig().magic_link;
 		super({
 			jwtFromRequest: ExtractJwt.fromBodyField('token'),
 			ignoreExpiration: false,

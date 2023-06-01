@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { User } from '@user/entities/user.entity';
 import { LocalSignupDto } from '@authentication/dto/local-signup.dto';
 import { UserService } from '@user/user.service';
@@ -32,7 +32,7 @@ export class AuthenticationService {
 		return user.id;
 	}
 
-	async activateAccount(id: string) {
+	async activateUser(id: string) {
 		const user = await this.userService.findOne(id);
 		const tokens = await this.userService.generateTokens(user);
 		await this.messagingService.sendEmail({
@@ -41,6 +41,18 @@ export class AuthenticationService {
 			data: {},
 		});
 		return tokens;
+	}
+
+	async refreshLogin(access_token: string, refresh_token: string, user: User) {
+		if (
+			user.accessToken === access_token &&
+			user.refreshToken === refresh_token
+		) {
+			return await this.userService.generateTokens(user);
+		} else {
+			await this.userService.invalidateTokens(user);
+			throw new UnauthorizedException('Wrong tokens');
+		}
 	}
 
 	async forgotPassword(email: string) {

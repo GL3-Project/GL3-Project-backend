@@ -19,9 +19,10 @@ import { ConfigurationService } from '@configuration/configuration.service';
 			imports: [ConfigurationModule],
 			inject: [ConfigurationService],
 			useFactory: async (configService: ConfigurationService) => ({
-				secret: configService.getAuthConfig().jwt.secret,
+				secret: configService.getAuthConfig().refresh_token.secret,
 				signOptions: {
-					expiresIn: configService.getAuthConfig().jwt.maximumAge,
+					expiresIn:
+						configService.getAuthConfig().reset_password.maximumAge,
 				},
 			}),
 		}),

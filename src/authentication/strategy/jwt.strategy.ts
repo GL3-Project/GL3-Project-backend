@@ -14,7 +14,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, JWT_STRATEGY_NAME) {
 		private readonly configService: ConfigurationService,
 		private readonly userService: UserService,
 	) {
-		const { secret } = configService.getAuthConfig().jwt;
+		const { secret } = configService.getAuthConfig().access_token;
 		super({
 			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 			ignoreExpiration: false,

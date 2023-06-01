@@ -17,6 +17,7 @@ import { PersonnelProfileService } from '@personnel-profile/personnel-profile.se
 import { LocalSignupDto } from '@authentication/dto/local-signup.dto';
 import { Accounts } from '@user/entities/accounts.entity';
 import { Profile } from '@user/entities/profile.entity';
+import { ConfigurationService } from '@configuration/configuration.service';
 
 @Injectable()
 export class UserService extends BaseService<User> {
@@ -26,6 +27,7 @@ export class UserService extends BaseService<User> {
 		private readonly jwtService: JwtService,
 		private readonly studentService: StudentProfileService,
 		private readonly personnelService: PersonnelProfileService,
+		private readonly configService: ConfigurationService,
 	) {
 		super(repository, User.name);
 	}
@@ -58,12 +60,22 @@ export class UserService extends BaseService<User> {
 	async generateTokens(user: User) {
 		const access_token = this.jwtService.sign(
 			{ id: user.id },
-			{ subject: user.id },
+			{
+				subject: user.id,
+				secret: this.configService.getAuthConfig().access_token.secret,
+				expiresIn:
+					this.configService.getAuthConfig().access_token.maximumAge,
+			},
 		);
 
 		const refresh_token = this.jwtService.sign(
 			{ id: user.id },
-			{ subject: user.id },
+			{
+				subject: user.id,
+				secret: this.configService.getAuthConfig().refresh_token.secret,
+				expiresIn:
+					this.configService.getAuthConfig().refresh_token.maximumAge,
+			},
 		);
 
 		user.refreshToken = refresh_token;
