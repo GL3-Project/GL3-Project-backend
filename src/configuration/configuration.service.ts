@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { DatabaseConfig } from '@configuration/configs/database.config';
 import { MiscConfig } from '@configuration/configs/misc.config';
 import { AuthConfig } from '@configuration/configs/auth.config';
+import { MessagingConfig } from '@configuration/configs/messaging.config';
 
 @Injectable()
 export class ConfigurationService extends ConfigService {
@@ -16,5 +17,9 @@ export class ConfigurationService extends ConfigService {
 
 	getAuthConfig(): AuthConfig {
 		return this.getOrThrow<AuthConfig>('auth');
+	}
+
+	getMessagingConfig(): MessagingConfig {
+		return this.getOrThrow<MessagingConfig>('messaging');
 	}
 }
