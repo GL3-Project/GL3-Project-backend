@@ -15,7 +15,9 @@ export class BaseService<Entity extends BaseEntity> {
 
 	async create(createDto: DeepPartial<Entity>): Promise<Entity> {
 		const entity = this.repository.create(createDto);
-		return await this.repository.save(entity);
+		const savedEntity = await this.repository.save(entity);
+		this.logger.log(`created new ${this.entityName}`);
+		return savedEntity;
 	}
 
 	async findAll(): Promise<Entity[]> {
@@ -49,7 +51,11 @@ export class BaseService<Entity extends BaseEntity> {
 		updateDto: DeepPartial<Entity>,
 	): Promise<Entity> {
 		entity = { ...entity, ...updateDto };
-		return await this.repository.save(entity);
+		const savedEntity = await this.repository.save(entity);
+		this.logger.log(
+			`successfully updated ${this.entityName} ${savedEntity.id}`,
+		);
+		return savedEntity;
 	}
 
 	async remove(id: Entity['id']): Promise<{ count: number }> {
@@ -59,6 +65,7 @@ export class BaseService<Entity extends BaseEntity> {
 			throw new NotFoundException(
 				`No ${this.entityName} was found with this id`,
 			);
+		this.logger.log(`successfully deleted ${this.entityName} ${id}`);
 		return { count: affected };
 	}
 
@@ -69,6 +76,7 @@ export class BaseService<Entity extends BaseEntity> {
 			throw new NotFoundException(
 				`No ${this.entityName} was found with this id`,
 			);
+		this.logger.log(`successfully restored ${this.entityName} ${id}`);
 		return { count: affected };
 	}
 }

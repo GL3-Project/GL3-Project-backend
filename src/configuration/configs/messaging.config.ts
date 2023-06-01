@@ -16,9 +16,6 @@ export const messagingConfig = registerAs('messaging', (): MessagingConfig => {
 	if (process.env.SENDER_EMAIL === undefined)
 		throw new InternalServerErrorException('No sender email');
 
-	if (process.env.NODEMAILER_HOST === undefined)
-		throw new InternalServerErrorException('No nodemailer host');
-
 	if (process.env.NODEMAILER_USER === undefined)
 		throw new InternalServerErrorException('No nodemailer user');
 

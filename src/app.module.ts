@@ -4,14 +4,16 @@ import { databaseConfig } from '@configuration/configs/database.config';
 import { Environment, miscConfig } from '@configuration/configs/misc.config';
 import { ConfigurationService } from '@configuration/configuration.service';
 import { ConfigurationModule } from '@configuration/configuration.module';
-import { StudentModule } from '@student/student.module';
-import { PersonnelModule } from '@personnel/personnel.module';
+import { StudentProfileModule } from '@student-profile/student-profile.module';
+import { PersonnelProfileModule } from '@personnel-profile/personnel-profile.module';
 import { DocumentModule } from '@document/document.module';
 import { TemplateModule } from '@template/template.module';
 import { AccountModule } from '@account/account.module';
 import { AuthenticationModule } from '@authentication/authentication.module';
 import { UserModule } from '@user/user.module';
 import { authConfig } from '@configuration/configs/auth.config';
+import { messagingConfig } from '@configuration/configs/messaging.config';
+import { frontConfig } from '@configuration/configs/front.config';
 
 @Module({
 	imports: [
@@ -43,12 +45,18 @@ import { authConfig } from '@configuration/configs/auth.config';
 				'.env.development.local',
 				'.env.development',
 			],
-			load: [databaseConfig, miscConfig, authConfig],
+			load: [
+				databaseConfig,
+				miscConfig,
+				authConfig,
+				messagingConfig,
+				frontConfig,
+			],
 			expandVariables: true,
 			cache: true,
 		}),
-		StudentModule,
-		PersonnelModule,
+		StudentProfileModule,
+		PersonnelProfileModule,
 		DocumentModule,
 		TemplateModule,
 		AccountModule,

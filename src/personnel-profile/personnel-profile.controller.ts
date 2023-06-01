@@ -7,17 +7,17 @@ import {
 	Patch,
 	Post,
 } from '@nestjs/common';
-import { PersonnelService } from './personnel.service';
-import { CreatePersonnelDto } from './dto/create-personnel.dto';
-import { UpdatePersonnelDto } from './dto/update-personnel.dto';
-import { PersonnelProfile } from '@personnel/entities/personnel.entity';
+import { PersonnelProfileService } from './personnel-profile.service';
+import { CreatePersonnelProfileDto } from './dto/create-personnel-profile.dto';
+import { UpdatePersonnelProfileDto } from './dto/update-personnel-profile.dto';
+import { PersonnelProfile } from '@personnel-profile/entities/personnel-profile.entity';
 
 @Controller('personnel')
-export class PersonnelController {
-	constructor(private readonly personnelService: PersonnelService) {}
+export class PersonnelProfileController {
+	constructor(private readonly personnelService: PersonnelProfileService) {}
 
 	@Post()
-	async create(@Body() createPersonnelDto: CreatePersonnelDto) {
+	async create(@Body() createPersonnelDto: CreatePersonnelProfileDto) {
 		return this.personnelService.create(createPersonnelDto);
 	}
 
@@ -34,7 +34,7 @@ export class PersonnelController {
 	@Patch(':id')
 	async update(
 		@Param('id') id: PersonnelProfile['id'],
-		@Body() updatePersonnelDto: UpdatePersonnelDto,
+		@Body() updatePersonnelDto: UpdatePersonnelProfileDto,
 	) {
 		const personnel = await this.personnelService.findOne(id);
 		return this.personnelService.update(personnel, updatePersonnelDto);

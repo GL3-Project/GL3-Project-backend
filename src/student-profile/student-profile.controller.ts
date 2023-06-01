@@ -7,14 +7,14 @@ import {
 	Patch,
 	Post,
 } from '@nestjs/common';
-import { StudentService } from './student.service';
+import { StudentProfileService } from './student-profile.service';
 import { CreateStudentProfileDto } from './dto/create-student-profile.dto';
-import { UpdateStudentDto } from './dto/update-student.dto';
-import { StudentProfile } from '@student/entities/student.entity';
+import { UpdateStudentProfileDto } from './dto/update-student-profile.dto';
+import { StudentProfile } from '@student-profile/entities/student-profile.entity';
 
 @Controller('student')
-export class StudentController {
-	constructor(private readonly studentService: StudentService) {}
+export class StudentProfileController {
+	constructor(private readonly studentService: StudentProfileService) {}
 
 	@Post()
 	async create(@Body() createStudentDto: CreateStudentProfileDto) {
@@ -23,7 +23,7 @@ export class StudentController {
 
 	@Get()
 	async findAll() {
-		return 'This is the student controller.';
+		return 'This is the student-profile controller.';
 	}
 
 	@Get(':id')
@@ -34,7 +34,7 @@ export class StudentController {
 	@Patch(':id')
 	async update(
 		@Param('id') id: StudentProfile['id'],
-		@Body() updateStudentDto: UpdateStudentDto,
+		@Body() updateStudentDto: UpdateStudentProfileDto,
 	) {
 		const student = await this.studentService.findOne(id);
 		return this.studentService.update(student, updateStudentDto);

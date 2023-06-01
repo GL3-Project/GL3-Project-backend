@@ -1,27 +1,58 @@
 import {
 	BadRequestException,
 	Injectable,
-	Logger,
 	NotFoundException,
 	UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@user/entities/user.entity';
 import { Repository } from 'typeorm';
-import { UserAccount } from '@user/intefaces/user.interface';
+import { UserAccount, UserRole } from '@user/intefaces/user.interface';
 import { LocalAccountService } from '@account/local-account.service';
 import { JwtService } from '@nestjs/jwt';
+import { BaseService } from '@base/base.service';
+import { SignupDto } from '@authentication/dto/signup.dto';
+import { StudentProfileService } from '@student-profile/student-profile.service';
+import { PersonnelProfileService } from '@personnel-profile/personnel-profile.service';
+import { LocalSignupDto } from '@authentication/dto/local-signup.dto';
+import { Accounts } from '@user/entities/accounts.entity';
+import { Profile } from '@user/entities/profile.entity';
 
 @Injectable()
-export class UserService {
-	private readonly logger: Logger;
-
+export class UserService extends BaseService<User> {
 	constructor(
-		@InjectRepository(User) private readonly repository: Repository<User>,
+		@InjectRepository(User) protected readonly repository: Repository<User>,
 		private readonly localAccountService: LocalAccountService,
-		protected readonly jwtService: JwtService,
+		private readonly jwtService: JwtService,
+		private readonly studentService: StudentProfileService,
+		private readonly personnelService: PersonnelProfileService,
 	) {
-		this.logger = new Logger(User.name);
+		super(repository, User.name);
+	}
+
+	async create(createDto: SignupDto) {
+		const { role, profile } = createDto;
+		const user = await this.repository.create({ role });
+
+		switch (role) {
+			case UserRole.student:
+				user.profile = await this.studentService.create(profile);
+				break;
+			case UserRole.personnel:
+				user.profile = await this.personnelService.create(profile);
+				break;
+			default:
+				user.profile = profile as Profile;
+				break;
+		}
+
+		user.accounts = new Accounts();
+		if (createDto instanceof LocalSignupDto)
+			user.accounts[UserAccount.local] =
+				await this.localAccountService.generate(createDto.password);
+
+		await this.repository.save(user);
+		return user;
 	}
 
 	async generateTokens(user: User) {

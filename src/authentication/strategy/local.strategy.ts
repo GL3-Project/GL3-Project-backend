@@ -4,7 +4,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '@user/user.service';
 import { User } from '@user/entities/user.entity';
 
-export const LOCAL_STRATEGY_NAME = 'login_local';
+export const LOCAL_STRATEGY_NAME = 'local';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { MessagingConfig } from '@config';
+import { MessagingConfig } from '@/configuration/configs/messaging.config';
 import { ISendMailOptions, MailerService } from '@nestjs-modules/mailer';
 
 export enum Template {
@@ -19,22 +19,20 @@ export enum Template {
 }
 
 const subjects: { [key in Template]?: string } = {
-	[Template.account_activation]: 'NCSC 4.0 - Successful Account Activation',
-	[Template.welcome_on_board]: 'NCSC 4.0 - Welcome On Board!',
-	[Template.password_reset]: 'NCSC 4.0 - Password Reset',
-	[Template.successful_password_reset]: 'NCSC 4.0 - Successful Password Reset',
-	[Template.invitation]: 'NCSC 4.0 - New Invitation',
-	[Template.successful_message_receipt]:
-		'NCSC 4.0 - Successful Message Receipt',
-	[Template.new_message]: 'NCSC 4.0 - New Message',
+	[Template.account_activation]: 'INSAT - Successful Account Activation',
+	[Template.welcome_on_board]: 'INSAT - Welcome On Board!',
+	[Template.password_reset]: 'INSAT - Password Reset',
+	[Template.successful_password_reset]: 'INSAT - Successful Password Reset',
+	[Template.invitation]: 'INSAT - New Invitation',
+	[Template.successful_message_receipt]: 'INSAT - Successful Message Receipt',
+	[Template.new_message]: 'INSAT - New Message',
 	[Template.successful_booking_registration]:
-		'NCSC 4.0 - Successful Registration',
+		'INSAT - Successful Registration',
 	[Template.booking_registration_confirmation]:
-		'NCSC 4.0 - Confirmation of Participation',
-	[Template.successful_pass_registration]:
-		'NCSC 4.0 - Successful Registration',
+		'INSAT - Confirmation of Participation',
+	[Template.successful_pass_registration]: 'INSAT - Successful Registration',
 	[Template.pass_registration_confirmation]:
-		'NCSC 4.0 - Confirmation of Participation',
+		'INSAT - Confirmation of Participation',
 };
 
 @Injectable()

@@ -13,7 +13,12 @@ export enum UserAccount {
 
 export type IAccounts = { [key in UserAccount]?: IAccount };
 
-export type IProfile = Record<never, never>;
+export interface IProfile {
+	email: string;
+	phone: string;
+
+	name(): string;
+}
 
 export interface IUser {
 	profile: IProfile;

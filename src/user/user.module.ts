@@ -7,6 +7,8 @@ import { Profile } from '@user/entities/profile.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigurationModule } from '@configuration/configuration.module';
 import { ConfigurationService } from '@configuration/configuration.service';
+import { StudentProfileModule } from '@student-profile/student-profile.module';
+import { PersonnelProfileModule } from '@personnel-profile/personnel-profile.module';
 
 @Module({
 	imports: [
@@ -22,6 +24,8 @@ import { ConfigurationService } from '@configuration/configuration.service';
 		}),
 		TypeOrmModule.forFeature([User, Profile]),
 		AccountModule,
+		StudentProfileModule,
+		PersonnelProfileModule,
 	],
 	providers: [UserService],
 	exports: [UserService],

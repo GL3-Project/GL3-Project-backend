@@ -11,8 +11,10 @@ import { DocumentService } from './document.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { Document } from '@document/entities/document.entity';
+import { UseJwtAuth } from '@authentication/decorators/jwt.decorator';
 
 @Controller('document')
+@UseJwtAuth()
 export class DocumentController {
 	constructor(private readonly documentService: DocumentService) {}
 

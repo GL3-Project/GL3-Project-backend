@@ -4,6 +4,7 @@ import { DatabaseConfig } from '@configuration/configs/database.config';
 import { MiscConfig } from '@configuration/configs/misc.config';
 import { AuthConfig } from '@configuration/configs/auth.config';
 import { MessagingConfig } from '@configuration/configs/messaging.config';
+import { FrontConfig } from '@configuration/configs/front.config';
 
 @Injectable()
 export class ConfigurationService extends ConfigService {
@@ -21,5 +22,9 @@ export class ConfigurationService extends ConfigService {
 
 	getMessagingConfig(): MessagingConfig {
 		return this.getOrThrow<MessagingConfig>('messaging');
+	}
+
+	getFrontConfig(): FrontConfig {
+		return this.getOrThrow<FrontConfig>('front');
 	}
 }

@@ -25,6 +25,14 @@ export class LocalAccountService {
 		return await this.repository.save(account);
 	}
 
+	async reset(password: string, account: LocalAccount) {
+		const salt = await genSalt(10);
+		const hashedPassword = await hash(password, salt);
+		account.salt = salt;
+		account.hashedPassword = hashedPassword;
+		return await this.repository.save(account);
+	}
+
 	async verify(password: string, account: LocalAccount) {
 		return compare(password, account.hashedPassword);
 	}

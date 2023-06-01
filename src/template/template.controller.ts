@@ -11,8 +11,10 @@ import { TemplateService } from './template.service';
 import { CreateTemplateDto } from './dto/create-template.dto';
 import { UpdateTemplateDto } from './dto/update-template.dto';
 import { Template } from '@template/entities/template.entity';
+import { UseJwtAuth } from '@authentication/decorators/jwt.decorator';
 
 @Controller('template')
+@UseJwtAuth()
 export class TemplateController {
 	constructor(private readonly templateService: TemplateService) {}
 

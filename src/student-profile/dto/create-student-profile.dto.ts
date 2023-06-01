@@ -1,4 +1,4 @@
-import { IStudentProfile } from '@student/interfaces/student.interface';
+import { IStudentProfile } from '@student-profile/interfaces/student-profile.interface';
 import {
 	IsEmail,
 	IsNumberString,
@@ -11,7 +11,7 @@ import {
 import { Type } from 'class-transformer';
 import { CreateSocialsDto } from '@user/dto/create-socials.dto';
 
-export class CreateStudentProfileDto implements IStudentProfile {
+export class CreateStudentProfileDto implements Omit<IStudentProfile, 'name'> {
 	@IsString()
 	@Length(3, 50)
 	firstName: string;
