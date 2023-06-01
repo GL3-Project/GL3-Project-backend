@@ -1,69 +1,89 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { databaseConfig } from '@configuration/configs/database.config';
-import { Environment, miscConfig } from '@configuration/configs/misc.config';
-import { ConfigurationService } from '@configuration/configuration.service';
-import { ConfigurationModule } from '@configuration/configuration.module';
-import { StudentProfileModule } from '@student-profile/student-profile.module';
-import { PersonnelProfileModule } from '@personnel-profile/personnel-profile.module';
-import { DocumentModule } from '@document/document.module';
-import { TemplateModule } from '@template/template.module';
-import { AccountModule } from '@account/account.module';
-import { AuthenticationModule } from '@authentication/authentication.module';
+import { AppController } from '@app.controller';
+import { AppService } from '@app.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import {
+	authConfig,
+	databaseConfig,
+	DatabaseConfig,
+	frontConfig,
+	messagingConfig,
+	MiscConfig,
+	miscConfig,
+} from '@config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { AccommodationModule } from '@accommodation/accommodation.module';
 import { UserModule } from '@user/user.module';
-import { authConfig } from '@configuration/configs/auth.config';
-import { messagingConfig } from '@configuration/configs/messaging.config';
-import { frontConfig } from '@configuration/configs/front.config';
+import { BookingModule } from '@booking/booking.module';
+import { TransportModule } from '@transport/transport.module';
+import { WorkshopModule } from '@workshop/workshop.module';
+import { AuthModule } from '@auth/auth.module';
+import { RequestModule } from '@request/request.module';
+import { MongooseModuleFactoryOptions } from '@nestjs/mongoose/dist/interfaces/mongoose-options.interface';
+import { ncscConfig } from '@config/ncsc.config';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
+import { PaymentModule } from '@payment/payment.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { AnnouncementModule } from '@announcement/announcement.module';
+import { AnalyticsModule } from '@analytics/analytics.module';
 
 @Module({
 	imports: [
-		TypeOrmModule.forRootAsync({
-			imports: [ConfigurationModule],
-			inject: [ConfigurationService],
-			useFactory: (
-				configService: ConfigurationService,
-			): TypeOrmModuleOptions => ({
-				...(configService.getDatabaseConfig() as Record<never, never>),
-				synchronize:
-					configService.getMiscConfig().environment !==
-					Environment.production,
-				ssl: {
-					rejectUnauthorized:
-						configService.getMiscConfig().environment ===
-						Environment.production,
-				},
-				autoLoadEntities: true,
-				logging: 'all',
-			}),
+		ScheduleModule.forRoot(),
+		ThrottlerModule.forRootAsync({
+			imports: [ConfigModule],
+			inject: [ConfigService],
+			useFactory: (configService: ConfigService) =>
+				configService.getOrThrow<MiscConfig>('misc').throttler,
 		}),
-		ConfigurationModule.forRoot({
+		ConfigModule.forRoot({
 			envFilePath: [
-				'.env.local',
+				'.env.local.example',
 				'.env',
-				'.env.production.local',
-				'.env.production',
 				'.env.development.local',
 				'.env.development',
 			],
 			load: [
-				databaseConfig,
-				miscConfig,
 				authConfig,
-				messagingConfig,
+				databaseConfig,
 				frontConfig,
+				messagingConfig,
+				miscConfig,
+				ncscConfig,
 			],
 			expandVariables: true,
 			cache: true,
 		}),
-		StudentProfileModule,
-		PersonnelProfileModule,
-		DocumentModule,
-		TemplateModule,
-		AccountModule,
-		AuthenticationModule,
+		MongooseModule.forRootAsync({
+			imports: [ConfigModule],
+			inject: [ConfigService],
+			useFactory: async (
+				configService: ConfigService,
+			): Promise<MongooseModuleFactoryOptions> => ({
+				uri: configService.getOrThrow<DatabaseConfig>('database').uri,
+			}),
+			connectionName: 'default',
+		}),
+		AccommodationModule,
 		UserModule,
+		BookingModule,
+		TransportModule,
+		WorkshopModule,
+		AuthModule,
+		RequestModule,
+		PaymentModule,
+		AnnouncementModule,
+		AnalyticsModule,
 	],
-	controllers: [],
-	providers: [],
+	controllers: [AppController],
+	providers: [
+		AppService,
+		{
+			provide: APP_GUARD,
+			useClass: ThrottlerGuard,
+		},
+	],
 })
-export class AppModule {}
+export class AppModule {
+}

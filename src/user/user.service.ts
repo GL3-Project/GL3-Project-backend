@@ -1,108 +1,393 @@
 import {
-	BadRequestException,
-	Injectable,
-	NotFoundException,
-	UnauthorizedException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '@user/entities/user.entity';
-import { Repository } from 'typeorm';
-import { UserAccount, UserRole } from '@user/intefaces/user.interface';
-import { LocalAccountService } from '@account/local-account.service';
-import { JwtService } from '@nestjs/jwt';
-import { BaseService } from '@base/base.service';
-import { SignupDto } from '@authentication/dto/signup.dto';
-import { StudentProfileService } from '@student-profile/student-profile.service';
-import { PersonnelProfileService } from '@personnel-profile/personnel-profile.service';
-import { LocalSignupDto } from '@authentication/dto/local-signup.dto';
-import { Accounts } from '@user/entities/accounts.entity';
-import { Profile } from '@user/entities/profile.entity';
-import { ConfigurationService } from '@configuration/configuration.service';
+import {
+  DeeplyPopulatedUserDocument,
+  IUser,
+  PopulatedUserDocument,
+  User,
+  UserDocument,
+  UserModel,
+  UserRole,
+} from '@user/schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { CreateUserDto } from '@user/dto';
+import {
+  ClientSession,
+  FilterQuery,
+  ProjectionType,
+  Types,
+  UpdateQuery,
+} from 'mongoose';
+import { UserBookingDocument } from '@booking/user-booking';
+import { Blob } from 'buffer';
+import { createObjectCsvStringifier } from 'csv-writer';
 
 @Injectable()
-export class UserService extends BaseService<User> {
-	constructor(
-		@InjectRepository(User) protected readonly repository: Repository<User>,
-		private readonly localAccountService: LocalAccountService,
-		private readonly jwtService: JwtService,
-		private readonly studentService: StudentProfileService,
-		private readonly personnelService: PersonnelProfileService,
-		private readonly configService: ConfigurationService,
-	) {
-		super(repository, User.name);
-	}
+export class UserService {
+  constructor(
+    @InjectModel(User.name, 'default') private userModel: UserModel,
+  ) {}
 
-	async create(createDto: SignupDto) {
-		const { role, profile } = createDto;
-		const user = await this.repository.create({ role });
+  async getAllUsers(session?: ClientSession): Promise<UserDocument[]> {
+    return await this.userModel.find({}, {}, { session }).exec();
+  }
 
-		switch (role) {
-			case UserRole.student:
-				user.profile = await this.studentService.create(profile);
-				break;
-			case UserRole.personnel:
-				user.profile = await this.personnelService.create(profile);
-				break;
-			default:
-				user.profile = profile as Profile;
-				break;
-		}
+  async getAllPopulatedUsers(
+    session?: ClientSession,
+  ): Promise<PopulatedUserDocument[]> {
+    return this.userModel
+      .find({}, {}, { session })
+      .populate<{ booking?: UserBookingDocument }>({ path: 'booking' })
+      .exec();
+  }
 
-		user.accounts = new Accounts();
-		if (createDto instanceof LocalSignupDto)
-			user.accounts[UserAccount.local] =
-				await this.localAccountService.generate(createDto.password);
+  async getAllDeeplyPopulatedUsers(
+    session?: ClientSession,
+  ): Promise<DeeplyPopulatedUserDocument[]> {
+    return this.userModel
+      .find({}, {}, { session })
+      .populate<{ booking?: PopulatedUserDocument }>({
+        path: 'booking',
+        populate: [
+          { path: 'roomBooking' },
+          { path: 'transportBooking' },
+          { path: 'workshopBooking' },
+        ],
+      })
+      .exec();
+  }
 
-		await this.repository.save(user);
-		return user;
-	}
+  async getUser(
+    userId: Types.ObjectId,
+    session?: ClientSession,
+  ): Promise<UserDocument> {
+    const user = await this.userModel.findById(userId, {}, { session }).exec();
 
-	async generateTokens(user: User) {
-		const access_token = this.jwtService.sign(
-			{ id: user.id },
-			{
-				subject: user.id,
-				secret: this.configService.getAuthConfig().access_token.secret,
-				expiresIn:
-					this.configService.getAuthConfig().access_token.maximumAge,
-			},
-		);
+    // null safety
+    if (user === null) throw new NotFoundException('User not found');
+    else return user;
+  }
 
-		const refresh_token = this.jwtService.sign(
-			{ id: user.id },
-			{
-				subject: user.id,
-				secret: this.configService.getAuthConfig().refresh_token.secret,
-				expiresIn:
-					this.configService.getAuthConfig().refresh_token.maximumAge,
-			},
-		);
+  async getPopulatedUser(
+    userId: Types.ObjectId,
+    session?: ClientSession,
+  ): Promise<PopulatedUserDocument> {
+    const user = await this.userModel
+      .findById(userId, {}, { session })
+      .populate<{ booking?: UserBookingDocument }>({ path: 'booking' })
+      .exec();
 
-		user.refreshToken = refresh_token;
-		user.accessToken = access_token;
-		await user.save();
+    if (user === null) throw new NotFoundException('User not found');
+    else return user;
+  }
 
-		return { access_token, refresh_token };
-	}
+  async findAllUsers(
+    conditions: FilterQuery<IUser>,
+    projection: ProjectionType<UserDocument> = {},
+    session?: ClientSession,
+  ): Promise<UserDocument[]> {
+    return this.userModel.find(conditions, projection, { session }).exec();
+  }
 
-	async invalidateTokens(user: User) {
-		user.accessToken = undefined;
-		user.refreshToken = undefined;
-		await user.save();
-	}
+  async findAllPopulatedUsers(
+    conditions: FilterQuery<IUser>,
+    session?: ClientSession,
+  ): Promise<PopulatedUserDocument[]> {
+    return this.userModel
+      .find(conditions, {}, { session })
+      .populate<{ booking?: UserBookingDocument }>({ path: 'booking' })
+      .exec();
+  }
 
-	async findWithLocalCredentials(id: string, password: string) {
-		const user = await this.repository.findOneBy({ id });
-		if (!user) throw new NotFoundException('User was not found');
-		else if (!user.accounts[UserAccount.local])
-			throw new BadRequestException('User does not have a local account');
-		else {
-			const authenticated = await this.localAccountService.verify(
-				password,
-				user.accounts[UserAccount.local],
-			);
-			if (authenticated) return user;
-			else throw new UnauthorizedException('Id or password is incorrect');
-		}
-	}
+  async findUser(
+    conditions: FilterQuery<IUser>,
+    session?: ClientSession,
+  ): Promise<UserDocument> {
+    const user = await this.userModel
+      .findOne(conditions, {}, { session })
+      .exec();
+
+    // null safety
+    if (user === null) throw new NotFoundException('User not found');
+    else return user;
+  }
+
+  async findPopulatedUser(
+    conditions: FilterQuery<IUser>,
+    session?: ClientSession,
+  ): Promise<PopulatedUserDocument> {
+    const user = await this.userModel
+      .findOne(conditions, {}, { session })
+      .populate<{ booking?: UserBookingDocument }>({ path: 'booking' })
+      .exec();
+
+    if (user === null) throw new NotFoundException('User not found');
+    else return user;
+  }
+
+  async findUserAndVerifyRefreshToken(
+    conditions: FilterQuery<IUser>,
+    refresh_token: number,
+    session?: ClientSession,
+  ): Promise<UserDocument> {
+    const user = await this.userModel
+      .findOne(conditions, {}, { session })
+      .select('+refreshToken')
+      .exec();
+
+    if (user && user.verifyRefreshToken(refresh_token)) {
+      return user;
+    } else {
+      // reset refresh token
+      if (user !== null) {
+        user.refreshToken = undefined;
+        user.accessToken = undefined;
+        await user.save({ session });
+      }
+
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+  }
+
+  async findPopulatedUserAndVerifyRefreshToken(
+    conditions: FilterQuery<IUser>,
+    refresh_token: number,
+    session?: ClientSession,
+  ): Promise<PopulatedUserDocument> {
+    const user = await this.userModel
+      .findOne(conditions, {}, { session })
+      .populate<{ booking?: UserBookingDocument }>({ path: 'booking' })
+      .select('+refreshToken')
+      .exec();
+
+    if (user && user.verifyRefreshToken(refresh_token)) {
+      return user;
+    } else {
+      // reset refresh token
+      if (user !== null) {
+        user.refreshToken = undefined;
+        user.accessToken = undefined;
+        await user.save({ session });
+      }
+
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+  }
+
+  async findUserAndVerifyAccessToken(
+    conditions: FilterQuery<IUser>,
+    access_token: number,
+    session?: ClientSession,
+  ): Promise<UserDocument> {
+    const user = await this.userModel
+      .findOne(conditions, {}, { session })
+      .select('+accessToken')
+      .exec();
+
+    if (user && user.verifyAccessToken(access_token)) {
+      return user;
+    } else {
+      // reset refresh token
+      if (user !== null) {
+        user.accessToken = undefined;
+        await user.save({ session });
+      }
+
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+  }
+
+  async findPopulatedUserAndVerifyAccessToken(
+    conditions: FilterQuery<IUser>,
+    access_token: number,
+    session?: ClientSession,
+  ): Promise<PopulatedUserDocument> {
+    const user = await this.userModel
+      .findOne(conditions, {}, { session })
+      .populate<{ booking?: UserBookingDocument }>({ path: 'booking' })
+      .select('+accessToken')
+      .exec();
+
+    if (user && user.verifyAccessToken(access_token)) {
+      return user;
+    } else {
+      // reset refresh token
+      if (user !== null) {
+        user.accessToken = undefined;
+        await user.save({ session });
+      }
+
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+  }
+
+  async findUserAndVerifyPassword(
+    conditions: FilterQuery<IUser>,
+    password: string,
+    session?: ClientSession,
+  ): Promise<UserDocument> {
+    const user = await this.userModel
+      .findOne(conditions, {}, { session })
+      .select('+hashedPassword')
+      .exec();
+
+    if (user && (await user.verifyPassword(password))) {
+      return user;
+    } else {
+      throw new UnauthorizedException('Password or handle incorrect');
+    }
+  }
+
+  async findPopulatedUserAndVerifyPassword(
+    conditions: FilterQuery<IUser>,
+    password: string,
+    session?: ClientSession,
+  ): Promise<PopulatedUserDocument> {
+    const user = await this.userModel
+      .findOne(conditions, {}, { session })
+      .populate<{ booking?: UserBookingDocument }>({ path: 'booking' })
+      .select('+hashedPassword')
+      .exec();
+
+    if (user && (await user.verifyPassword(password))) {
+      return user;
+    } else {
+      throw new UnauthorizedException('Password or handle incorrect');
+    }
+  }
+
+  async createUser(
+    userData: CreateUserDto,
+    role: UserRole,
+    session?: ClientSession,
+  ): Promise<UserDocument> {
+    const { password, ...userInfo } = { ...userData, role };
+    const user = new this.userModel(userInfo);
+    await user.changePassword(password);
+    return await user.save({ session });
+  }
+
+  async resetUserPassword(
+    userId: Types.ObjectId,
+    newPassword: string,
+    session?: ClientSession,
+  ): Promise<UserDocument> {
+    const user = await this.getUser(userId, session);
+    await user.changePassword(newPassword);
+    return await user.save({ session });
+  }
+
+  async updateUser(
+    conditions: FilterQuery<IUser>,
+    toUpdate: UpdateQuery<IUser> | IUser,
+    session?: ClientSession,
+  ): Promise<UserDocument> {
+    // setting returnOriginal to false ensures that the returned document is the one after update is applied
+    const user = await this.userModel
+      .findOneAndUpdate(conditions, toUpdate, {
+        session,
+        returnOriginal: false,
+      })
+      .exec();
+
+    // null safety
+    if (user === null) throw new NotFoundException('User not found');
+    else return user;
+  }
+
+  async updateUserRefreshToken(
+    conditions: FilterQuery<IUser>,
+    refresh_token: number,
+    session?: ClientSession,
+  ): Promise<UserDocument> {
+    // setting returnOriginal to false ensures that the returned document is the one after update is applied
+    const user = await this.userModel
+      .findOneAndUpdate(
+        conditions,
+        { refreshToken: refresh_token },
+        {
+          session,
+          returnOriginal: false,
+        },
+      )
+      .select('+refreshToken')
+      .exec();
+
+    // null safety
+    if (user === null) throw new NotFoundException('User not found');
+    else return user;
+  }
+
+  async updateUserAccessToken(
+    conditions: FilterQuery<IUser>,
+    access_token: number,
+    session?: ClientSession,
+  ): Promise<UserDocument> {
+    // setting returnOriginal to false ensures that the returned document is the one after update is applied
+    const user = await this.userModel
+      .findOneAndUpdate(
+        conditions,
+        { accessToken: access_token },
+        {
+          session,
+          returnOriginal: false,
+        },
+      )
+      .select('+accessToken')
+      .exec();
+
+    // null safety
+    if (user === null) throw new NotFoundException('User not found');
+    else return user;
+  }
+
+  async removeUser(
+    conditions: FilterQuery<IUser>,
+    session?: ClientSession,
+  ): Promise<UserDocument> {
+    const user = await this.userModel
+      .findOneAndDelete(conditions, { session })
+      .exec();
+
+    // null safety
+    if (user === null) throw new NotFoundException('User not found');
+    else return user;
+  }
+
+  async exportToCSV(userIds: Types.ObjectId[], session?: ClientSession) {
+    const users = await this.findAllPopulatedUsers(
+      { _id: { $in: userIds } },
+      session,
+    );
+
+    const stringifier = createObjectCsvStringifier({
+      header: [
+        { id: '_id', title: 'ID' },
+        { id: 'firstName', title: 'First Name' },
+        { id: 'lastName', title: 'Last Name' },
+        { id: 'email', title: 'Email' },
+        { id: 'cin', title: 'CIN' },
+        { id: 'linkedinProfile', title: 'Linkedin Profile' },
+        { id: 'birthDate', title: 'Birth Date' },
+        { id: 'address', title: 'Address' },
+        { id: 'studyField', title: 'Study Field / Job' },
+        { id: 'phone', title: 'Phone Number' },
+        { id: 'university', title: 'University / Company' },
+      ],
+      fieldDelimiter: ',',
+      recordDelimiter: '\n',
+      alwaysQuote: true,
+    });
+
+    const output =
+      stringifier.getHeaderString() +
+      // @ts-ignore
+      stringifier.stringifyRecords(users.map((user) => user._doc));
+    const blob = new Blob([output], { type: 'text/csv;charset=utf-8' });
+    const bufferArray = await blob.arrayBuffer();
+    return Buffer.from(bufferArray);
+  }
 }
