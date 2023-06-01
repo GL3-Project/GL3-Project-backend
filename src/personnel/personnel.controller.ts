@@ -10,7 +10,7 @@ import {
 import { PersonnelService } from './personnel.service';
 import { CreatePersonnelDto } from './dto/create-personnel.dto';
 import { UpdatePersonnelDto } from './dto/update-personnel.dto';
-import { Personnel } from '@personnel/entities/personnel.entity';
+import { PersonnelProfile } from '@personnel/entities/personnel.entity';
 
 @Controller('personnel')
 export class PersonnelController {
@@ -27,13 +27,13 @@ export class PersonnelController {
 	}
 
 	@Get(':id')
-	async findOne(@Param('id') id: Personnel['id']) {
+	async findOne(@Param('id') id: PersonnelProfile['id']) {
 		return this.personnelService.findOne(id);
 	}
 
 	@Patch(':id')
 	async update(
-		@Param('id') id: Personnel['id'],
+		@Param('id') id: PersonnelProfile['id'],
 		@Body() updatePersonnelDto: UpdatePersonnelDto,
 	) {
 		const personnel = await this.personnelService.findOne(id);
@@ -41,7 +41,7 @@ export class PersonnelController {
 	}
 
 	@Delete(':id')
-	async remove(@Param('id') id: Personnel['id']) {
+	async remove(@Param('id') id: PersonnelProfile['id']) {
 		return this.personnelService.remove(id);
 	}
 

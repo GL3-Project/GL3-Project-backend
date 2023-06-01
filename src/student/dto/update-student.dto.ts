@@ -1,4 +1,9 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateStudentDto } from './create-student.dto';
+import { OmitType, PartialType } from '@nestjs/mapped-types';
+import { CreateStudentProfileDto } from './create-student-profile.dto';
+import { UpdateSocialsDto } from '@user/dto/update-socials.dto';
 
-export class UpdateStudentDto extends PartialType(CreateStudentDto) {}
+export class UpdateStudentDto extends PartialType(
+	OmitType(CreateStudentProfileDto, ['socials'] as const),
+) {
+	socials: UpdateSocialsDto;
+}

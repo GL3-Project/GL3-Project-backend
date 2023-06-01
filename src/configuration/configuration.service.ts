@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DatabaseConfig } from '@configuration/configs/database.config';
 import { MiscConfig } from '@configuration/configs/misc.config';
+import { AuthConfig } from '@configuration/configs/auth.config';
 
 @Injectable()
 export class ConfigurationService extends ConfigService {
@@ -11,5 +12,9 @@ export class ConfigurationService extends ConfigService {
 
 	getMiscConfig(): MiscConfig {
 		return this.getOrThrow<MiscConfig>('misc');
+	}
+
+	getAuthConfig(): AuthConfig {
+		return this.getOrThrow<AuthConfig>('auth');
 	}
 }

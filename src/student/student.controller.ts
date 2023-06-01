@@ -8,16 +8,16 @@ import {
 	Post,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
-import { CreateStudentDto } from './dto/create-student.dto';
+import { CreateStudentProfileDto } from './dto/create-student-profile.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
-import { Student } from '@student/entities/student.entity';
+import { StudentProfile } from '@student/entities/student.entity';
 
 @Controller('student')
 export class StudentController {
 	constructor(private readonly studentService: StudentService) {}
 
 	@Post()
-	async create(@Body() createStudentDto: CreateStudentDto) {
+	async create(@Body() createStudentDto: CreateStudentProfileDto) {
 		return this.studentService.create(createStudentDto);
 	}
 
@@ -27,13 +27,13 @@ export class StudentController {
 	}
 
 	@Get(':id')
-	async findOne(@Param('id') id: Student['id']) {
+	async findOne(@Param('id') id: StudentProfile['id']) {
 		return this.studentService.findOne(id);
 	}
 
 	@Patch(':id')
 	async update(
-		@Param('id') id: Student['id'],
+		@Param('id') id: StudentProfile['id'],
 		@Body() updateStudentDto: UpdateStudentDto,
 	) {
 		const student = await this.studentService.findOne(id);
@@ -41,7 +41,7 @@ export class StudentController {
 	}
 
 	@Delete(':id')
-	async remove(@Param('id') id: Student['id']) {
+	async remove(@Param('id') id: StudentProfile['id']) {
 		return this.studentService.remove(id);
 	}
 

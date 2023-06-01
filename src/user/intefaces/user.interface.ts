@@ -11,9 +11,13 @@ export enum UserAccount {
 	google = 'google',
 }
 
-export interface IUser<P> {
-	profile: P;
-	accounts: Record<UserAccount, IAccount>;
+export type IAccounts = { [key in UserAccount]?: IAccount };
+
+export type IProfile = Record<never, never>;
+
+export interface IUser {
+	profile: IProfile;
+	accounts: IAccounts;
 	role: UserRole;
 	accessToken?: string;
 	refreshToken?: string;

@@ -44,7 +44,10 @@ export class BaseService<Entity extends BaseEntity> {
 		return entity;
 	}
 
-	async update(entity: Entity, updateDto: Partial<Entity>): Promise<Entity> {
+	async update(
+		entity: Entity,
+		updateDto: DeepPartial<Entity>,
+	): Promise<Entity> {
 		entity = { ...entity, ...updateDto };
 		return await this.repository.save(entity);
 	}

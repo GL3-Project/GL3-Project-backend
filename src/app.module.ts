@@ -10,6 +10,8 @@ import { DocumentModule } from '@document/document.module';
 import { TemplateModule } from '@template/template.module';
 import { AccountModule } from '@account/account.module';
 import { AuthenticationModule } from '@authentication/authentication.module';
+import { UserModule } from '@user/user.module';
+import { authConfig } from '@configuration/configs/auth.config';
 
 @Module({
 	imports: [
@@ -41,7 +43,7 @@ import { AuthenticationModule } from '@authentication/authentication.module';
 				'.env.development.local',
 				'.env.development',
 			],
-			load: [databaseConfig, miscConfig],
+			load: [databaseConfig, miscConfig, authConfig],
 			expandVariables: true,
 			cache: true,
 		}),
@@ -51,6 +53,7 @@ import { AuthenticationModule } from '@authentication/authentication.module';
 		TemplateModule,
 		AccountModule,
 		AuthenticationModule,
+		UserModule,
 	],
 	controllers: [],
 	providers: [],

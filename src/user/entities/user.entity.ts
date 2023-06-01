@@ -1,11 +1,17 @@
-import { Column } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { BaseEntity } from '@base/entities/base.entity';
-import { IUser, UserAccount, UserRole } from '@user/intefaces/user.interface';
-import { IAccount } from '@account/interfaces/account.interface';
+import { IUser, UserRole } from '@user/intefaces/user.interface';
+import { Accounts } from '@user/entities/accounts.entity';
+import { Profile } from '@user/entities/profile.entity';
 
-export abstract class User<P> extends BaseEntity implements IUser<P> {
-	profile: P;
-	accounts: Record<UserAccount, IAccount>;
+@Entity({ name: 'user' })
+export class User extends BaseEntity implements IUser {
+	@OneToOne(() => Profile, { lazy: true, nullable: false })
+	@JoinColumn()
+	profile: Profile;
+
+	@Column(() => Accounts)
+	accounts: Accounts;
 
 	@Column({ type: 'enum', enum: UserRole, nullable: false })
 	role: UserRole;

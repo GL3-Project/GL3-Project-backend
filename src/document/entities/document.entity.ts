@@ -7,5 +7,5 @@ export class Document extends BaseEntity implements IDocument {
 	@Column({ type: 'varchar', length: 255, nullable: false })
 	name: string;
 
-	// TODO: complete entity. Take your time with decorator options.
+	// TODO: complete entity. Take your time with decorators options.
 }

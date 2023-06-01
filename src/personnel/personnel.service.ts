@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Personnel } from '@personnel/entities/personnel.entity';
+import { PersonnelProfile } from '@personnel/entities/personnel.entity';
 import { Repository } from 'typeorm';
 import { BaseService } from '@base/base.service';
 
 @Injectable()
-export class PersonnelService extends BaseService<Personnel> {
+export class PersonnelService extends BaseService<PersonnelProfile> {
 	constructor(
-		@InjectRepository(Personnel)
-		protected readonly repository: Repository<Personnel>,
+		@InjectRepository(PersonnelProfile)
+		protected readonly repository: Repository<PersonnelProfile>,
 	) {
-		super(repository, Personnel.name);
+		super(repository, PersonnelProfile.name);
 	}
 
 	// TODO: override all methods (make sure to log activity) and rewrite logic of only necessary methods. DON'T FORGET TO LOG.
