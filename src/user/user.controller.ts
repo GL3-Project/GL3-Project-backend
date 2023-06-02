@@ -45,7 +45,7 @@ export class UserController {
 
   @Post('export')
   @Role(UserRole.admin)
-  @Header('Content-Type', 'text/csv;charset=utf-8')
+  @Header('Content-Type ', 'text/csv;charset=utf-8')
   async export(@Body() { users }, @Res() response: Response) {
     return response.send(await this.userService.exportToCSV(users));
   }
