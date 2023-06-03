@@ -47,7 +47,7 @@ export class BookingService {
     @InjectConnection('default') private readonly connection: Connection,
   ) {
     this.paymentInterval =
-      this.configService.getOrThrow<NcscConfig>('ncsc').payment;
+      this.configService.getOrThrow<NcscConfig>('insat').payment;
   }
 
   async getAllBookings(session?: ClientSession) {

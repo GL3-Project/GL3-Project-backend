@@ -32,7 +32,7 @@ export class UserPassService {
     private readonly messagingService: MessagingService,
   ) {
     UserPass.price =
-      configService.getOrThrow<NcscConfig>('ncsc').pricePool.pass;
+      configService.getOrThrow<NcscConfig>('insat').pricePool.pass;
   }
 
   async createUserPass(user: PopulatedUserDocument, session?: ClientSession) {
@@ -67,7 +67,7 @@ export class UserPassService {
       data: {
         first_name: user.firstName,
         deadline: getDeadline(
-          this.configService.getOrThrow<NcscConfig>('ncsc').payment,
+          this.configService.getOrThrow<NcscConfig>('insat').payment,
         ),
         link: this.configService.getOrThrow<FrontConfig>('front').routes
           .faq_route,

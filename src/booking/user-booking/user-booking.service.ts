@@ -54,7 +54,7 @@ export class UserBookingService {
     private readonly messagingService: MessagingService,
   ) {
     UserBooking.price =
-      configService.getOrThrow<NcscConfig>('ncsc').pricePool.base;
+      configService.getOrThrow<NcscConfig>('insat').pricePool.base;
   }
 
   async createUserBooking(data: IUserBooking, session?: ClientSession) {
@@ -163,7 +163,7 @@ export class UserBookingService {
         first_name: user.firstName,
         room: booking.roomBooking?.roomType.name,
         deadline: getDeadline(
-          this.configService.getOrThrow<NcscConfig>('ncsc').payment,
+          this.configService.getOrThrow<NcscConfig>('insat').payment,
         ),
         link: this.configService.getOrThrow<FrontConfig>('front').routes
           .faq_route,
