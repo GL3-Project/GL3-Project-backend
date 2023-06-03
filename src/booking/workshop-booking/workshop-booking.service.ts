@@ -32,7 +32,7 @@ export class WorkshopBookingService {
     private readonly configService: ConfigService,
   ) {
     WorkshopBooking.price =
-      configService.getOrThrow<NcscConfig>('ncsc').pricePool.workshop;
+      configService.getOrThrow<NcscConfig>('insat').pricePool.workshop;
   }
 
   async getWorkshopBooking(

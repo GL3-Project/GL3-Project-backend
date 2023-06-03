@@ -19,21 +19,17 @@ export enum Template {
 }
 
 const subjects: { [key in Template]?: string } = {
-  [Template.account_activation]: 'NCSC 4.0 - Successful Account Activation',
-  [Template.welcome_on_board]: 'NCSC 4.0 - Welcome On Board!',
-  [Template.password_reset]: 'NCSC 4.0 - Password Reset',
-  [Template.successful_password_reset]: 'NCSC 4.0 - Successful Password Reset',
-  [Template.invitation]: 'NCSC 4.0 - New Invitation',
-  [Template.successful_message_receipt]:
-    'NCSC 4.0 - Successful Message Receipt',
-  [Template.new_message]: 'NCSC 4.0 - New Message',
-  [Template.successful_booking_registration]:
-    'NCSC 4.0 - Successful Registration',
-  [Template.booking_registration_confirmation]:
-    'NCSC 4.0 - Confirmation of Participation',
-  [Template.successful_pass_registration]: 'NCSC 4.0 - Successful Registration',
-  [Template.pass_registration_confirmation]:
-    'NCSC 4.0 - Confirmation of Participation',
+  [Template.account_activation]: 'Successful Account Activation',
+  [Template.welcome_on_board]: 'Welcome On Board!',
+  [Template.password_reset]: 'Password Reset',
+  [Template.successful_password_reset]: 'Successful Password Reset',
+  [Template.invitation]: 'New Invitation',
+  [Template.successful_message_receipt]: 'Successful Message Receipt',
+  [Template.new_message]: 'New Message',
+  [Template.successful_booking_registration]: 'Successful Registration',
+  [Template.booking_registration_confirmation]: 'Confirmation of Participation',
+  [Template.successful_pass_registration]: 'Successful Registration',
+  [Template.pass_registration_confirmation]: 'Confirmation of Participation',
 };
 
 @Injectable()
