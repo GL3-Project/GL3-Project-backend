@@ -12,7 +12,7 @@ export interface NcscConfig {
 }
 
 export const ncscConfig = registerAs(
-  'insat',
+  'ncsc',
   (): NcscConfig => ({
     edition: process.env.EDITION ?? 'NCSC',
     payment: 4 * 24 * 3600 * 1000, // 6 days by default
