@@ -8,7 +8,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { ClientSession, Types } from 'mongoose';
 import { UserService } from '@user/user.service';
 import { ConfigService } from '@nestjs/config';
-import { NcscConfig } from '@config/ncsc.config';
+import { NcscConfig } from '@config/insatBookingConfig';
 import { PopulatedUserDocument } from '@user/schema';
 import { MessagingService, Template } from '@messaging/messaging.service';
 import {

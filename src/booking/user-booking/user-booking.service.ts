@@ -29,7 +29,7 @@ import {
 import { CreateUserBookingDto } from '@booking/user-booking/dto/create-user-booking.dto';
 import { UserBookingDto } from '@booking/user-booking/dto/user-booking.dto';
 import { ConfigService } from '@nestjs/config';
-import { NcscConfig } from '@config/ncsc.config';
+import { NcscConfig } from '@config/insatBookingConfig';
 import { PopulatedUserDocument, UserDocument } from '@user/schema';
 import { MessagingService, Template } from '@messaging/messaging.service';
 import { FrontConfig } from '@config';

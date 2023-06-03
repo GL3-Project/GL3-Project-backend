@@ -11,7 +11,7 @@ import {
   BookingModel,
 } from '@booking/booking.schema';
 import { ConfigService } from '@nestjs/config';
-import { NcscConfig } from '@config/ncsc.config';
+import { NcscConfig } from '@config/insatBookingConfig';
 import { ClientSession, Connection, FilterQuery, Types } from 'mongoose';
 import { PopulatedUserDocument } from '@user/schema';
 import { UserPassService } from '@booking/user-pass';

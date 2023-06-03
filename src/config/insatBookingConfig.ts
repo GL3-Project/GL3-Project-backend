@@ -11,7 +11,7 @@ export interface NcscConfig {
   };
 }
 
-export const ncscConfig = registerAs(
+export const insatBookingConfig = registerAs(
   'insat',
   (): NcscConfig => ({
     edition: process.env.EDITION ?? 'NCSC',

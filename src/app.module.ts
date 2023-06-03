@@ -20,7 +20,7 @@ import { WorkshopModule } from '@workshop/workshop.module';
 import { AuthModule } from '@auth/auth.module';
 import { RequestModule } from '@request/request.module';
 import { MongooseModuleFactoryOptions } from '@nestjs/mongoose/dist/interfaces/mongoose-options.interface';
-import { ncscConfig } from '@config/ncsc.config';
+import { insatBookingConfig } from '@config/insatBookingConfig';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { PaymentModule } from '@payment/payment.module';
@@ -50,7 +50,7 @@ import { AnalyticsModule } from '@analytics/analytics.module';
         frontConfig,
         messagingConfig,
         miscConfig,
-        ncscConfig,
+        insatBookingConfig,
       ],
       expandVariables: true,
       cache: true,
